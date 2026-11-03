@@ -1,0 +1,74 @@
+{
+  "site": {
+    "name": "Family",
+    "accent": "Tube",
+    "tagline": "What the family watches",
+    "domain": "tube.ajith.ai"
+  },
+
+  "_sources_help": "Each source is one YouTube channel or playlist. Use handle (@name), channelId (UC...) or playlistId (PL...). 'match' keeps only titles matching the regex. 'backfill' = pages of 50 older videos to pull when a YouTube API key is set. 'keep' = how many videos to remember.",
+  "sources": {
+    "kreupasanam":    { "handle": "@kreupasanammarianshrine", "backfill": 20, "keep": 3000 },
+    "dailyblessings": { "handle": "", "todo": "Send me the Daily Blessings channel link" },
+
+    "karpathy":   { "handle": "@AndrejKarpathy" },
+    "lex":        { "handle": "@lexfridman" },
+    "dwarkesh":   { "handle": "@DwarkeshPatel" },
+    "anthropic":  { "handle": "@anthropic-ai" },
+    "yc":         { "handle": "@ycombinator" },
+    "lenny":      { "handle": "@LennysPodcast" },
+    "mfm":        { "handle": "@MyFirstMillionPod" },
+    "malayalam":  { "handle": "", "todo": "Send me the Malayalam channels you meant by KPH" }
+  },
+
+  "_nav_help": "Sidebar items. Children inherit the parent's sources. 'match'/'exclude' are title regexes (case-insensitive). 'categories' adds filter chips; first match wins, unmatched go to the last chip. 'groupBy': 'date' shows date headings. 'kids': true keeps it off the Home page. 'unsorted': true lists parent videos that no sibling matched.",
+  "nav": [
+    { "id": "home", "label": "Home", "icon": "home", "type": "home" },
+
+    { "id": "kreupasanam", "label": "Kreupasanam", "icon": "cross", "sources": ["kreupasanam"],
+      "children": [
+        { "id": "daily-bread", "label": "Our Daily Bread", "match": "daily\\s*bread|അനുദിന|അന്നന്ന", "groupBy": "date" },
+        { "id": "udambadi", "label": "Udambadi Dhyanam", "match": "udambadi|udampadi|ഉടമ്പടി", "groupBy": "date" },
+        { "id": "vijayakumar", "label": "Br. Vijayakumar", "match": "vijay\\s*kumar|vijayakumar|വിജയ\\s*കുമാർ|വിജയകുമാർ" },
+        { "id": "testimonials", "label": "Testimonials", "match": "testimon|sakshy|സാക്ഷ്യ|അനുഭവ",
+          "categories": [
+            { "id": "career", "label": "Career, visa & job", "match": "visa|job|career|work\\s*permit|abroad|\\buk\\b|canada|usa|australia|germany|ireland|nurs|interview|promotion|exam|ജോലി|വിസ|വിദേശ|പരീക്ഷ" },
+            { "id": "health", "label": "Health", "match": "health|heal|cancer|disease|surgery|hospital|tumou?r|kidney|heart|illness|cure|recover|രോഗ|സൗഖ്യ|ക്യാൻസർ|കാൻസർ|ഓപ്പറേഷൻ|ആശുപത്രി" },
+            { "id": "family", "label": "Marriage & children", "match": "marriage|wedding|child|baby|pregnan|conceiv|ivf|വിവാഹ|കുഞ്ഞ|ഗർഭ|കുടുംബ" },
+            { "id": "home-money", "label": "House, debt & money", "match": "debt|loan|house|land|financ|money|business|കടം|വീട്|സാമ്പത്തിക" },
+            { "id": "others", "label": "Others" }
+          ] },
+        { "id": "other", "label": "Everything else", "unsorted": true }
+      ] },
+
+    { "id": "daily-blessings", "label": "Daily Blessings", "icon": "sun", "sources": ["dailyblessings"], "groupBy": "date" },
+
+    { "type": "divider", "label": "Family" },
+
+    { "id": "ajith", "label": "Ajith", "avatar": "#e8692c", "sources": ["karpathy", "lex", "dwarkesh", "anthropic", "yc", "lenny", "mfm", "malayalam"],
+      "children": [
+        { "id": "ai", "label": "AI podcasts", "sources": ["karpathy", "lex", "dwarkesh", "anthropic"] },
+        { "id": "startups", "label": "Startup podcasts", "sources": ["yc", "lenny", "mfm"] },
+        { "id": "malayalam", "label": "Malayalam", "sources": ["malayalam"] }
+      ] },
+    { "id": "nisha", "label": "Nisha", "avatar": "#c2185b", "sources": ["kreupasanam", "dailyblessings"] }
+  ],
+
+  "ranking": {
+    "_help": "Must watch = views, likes and comments, faded by age. Only videos from the last 'windowDays' count.",
+    "windowDays": 30,
+    "halfLifeDays": 10,
+    "top": 10
+  },
+
+  "hideShorts": true,
+
+  "_signin_help": "Google sign-in (Firebase) and the browser YouTube key. Both are safe to be public: lock the YouTube key to tube.ajith.ai in Google Cloud, and access is controlled by firestore.rules. Kids' profiles live in Settings, not here.",
+  "firebase": {
+    "apiKey": "",
+    "authDomain": "",
+    "projectId": "",
+    "appId": ""
+  },
+  "youtubeApiKey": ""
+}

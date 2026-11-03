@@ -1,0 +1,25 @@
+rules_version = '2';
+// One document per family in "households". Only signed-in Google users whose
+// email is in that family's member list can read or change it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /households/{id} {
+      function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+      function me() { return request.auth.token.email.lower(); }
+
+      allow read: if signedIn() && me() in resource.data.members;
+
+      allow create: if signedIn()
+        && request.resource.data.owner == request.auth.uid
+        && request.resource.data.members == [me()];
+
+      // Members can edit, but nobody can change the owner or lock themselves out.
+      allow update: if signedIn()
+        && me() in resource.data.members
+        && me() in request.resource.data.members
+        && request.resource.data.owner == resource.data.owner;
+
+      allow delete: if signedIn() && resource.data.owner == request.auth.uid;
+    }
+  }
+}
