@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FamilyTube</title>
+  <meta name="description" content="What the family watches: Kreupasanam, Daily Blessings, and everyone's own picks.">
+  <meta name="theme-color" content="#0f0f0f">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="top">
+    <button class="icon-btn" id="menu" aria-label="Menu">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </button>
+    <a class="logo" href="#/" id="logo"><span id="logo-a">Family</span><span id="logo-b">Tube</span></a>
+    <form class="search" id="search-form" role="search">
+      <input id="search" type="search" placeholder="Search" autocomplete="off" aria-label="Search videos">
+    </form>
+    <div id="account" class="account"></div>
+  </header>
+
+  <div class="scrim" id="scrim"></div>
+  <nav class="side" id="side" aria-label="Sections"></nav>
+
+  <main id="main" tabindex="-1">
+    <p class="loading">Loading…</p>
+  </main>
+
+  <div class="player" id="player" hidden>
+    <div class="player-box">
+      <div class="player-frame" id="player-frame"></div>
+      <div class="player-meta">
+        <div>
+          <h2 id="player-title"></h2>
+          <p id="player-sub"></p>
+        </div>
+        <div class="player-actions">
+          <a id="player-yt" target="_blank" rel="noopener">Open in YouTube</a>
+          <button id="player-close" class="pill">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script type="module" src="account.js"></script>
+</body>
+</html>
