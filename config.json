@@ -21,24 +21,24 @@
     "malayalam":  { "handle": "", "todo": "Send me the Malayalam channels you meant by KPH" }
   },
 
-  "_nav_help": "Sidebar items. Children inherit the parent's sources. 'match'/'exclude' are title regexes (case-insensitive). 'categories' adds filter chips; first match wins, unmatched go to the last chip. 'groupBy': 'date' shows date headings. 'kids': true keeps it off the Home page. 'unsorted': true lists parent videos that no sibling matched.",
+  "_nav_help": "Sidebar items. Children inherit the parent's sources. 'match'/'exclude' are title regexes (case-insensitive). 'categories' adds filter chips; first match wins, unmatched go to the last chip. 'groupBy': 'date' shows date headings. 'kids': true keeps it off the Home page. 'unsorted': true lists parent videos that no sibling matched (Testimonials uses this, since testimony titles are personal stories with no common word).",
   "nav": [
     { "id": "home", "label": "Home", "icon": "home", "type": "home" },
 
     { "id": "kreupasanam", "label": "Kreupasanam", "icon": "cross", "sources": ["kreupasanam"],
       "children": [
-        { "id": "daily-bread", "label": "Our Daily Bread", "match": "daily\\s*bread|അനുദിന|അന്നന്ന", "groupBy": "date" },
-        { "id": "udambadi", "label": "Udambadi Dhyanam", "match": "udambadi|udampadi|ഉടമ്പടി", "groupBy": "date" },
+        { "id": "daily-bread", "label": "Our Daily Bread", "match": "അനുദിന\\s*അനുഗ്രഹ|\\|\\s*our\\s*daily\\s*bread\\s*\\|", "groupBy": "date" },
+        { "id": "udambadi", "label": "Udambadi Dhyanam", "match": "ഉടമ്പടി\\s*ധ്യാനം|udambadi\\s*dhyanam|ഒന്നാം\\s*ചൊവ്വ", "groupBy": "date" },
         { "id": "vijayakumar", "label": "Br. Vijayakumar", "match": "vijay\\s*kumar|vijayakumar|വിജയ\\s*കുമാർ|വിജയകുമാർ" },
-        { "id": "testimonials", "label": "Testimonials", "match": "testimon|sakshy|സാക്ഷ്യ|അനുഭവ",
+        { "id": "prayers", "label": "Daily prayers & live", "match": "ഇന്നത്തെ\\s*ഉടമ്പടി|സായാഹ്ന\\s*പ്രാർത്ഥന|ലൈവ്|\\blive\\b|\\brally\\b", "exclude": "ഉടമ്പടി\\s*ധ്യാനം|ഒന്നാം\\s*ചൊവ്വ", "groupBy": "date" },
+        { "id": "testimonials", "label": "Testimonials", "unsorted": true,
           "categories": [
-            { "id": "career", "label": "Career, visa & job", "match": "visa|job|career|work\\s*permit|abroad|\\buk\\b|canada|usa|australia|germany|ireland|nurs|interview|promotion|exam|ജോലി|വിസ|വിദേശ|പരീക്ഷ" },
-            { "id": "health", "label": "Health", "match": "health|heal|cancer|disease|surgery|hospital|tumou?r|kidney|heart|illness|cure|recover|രോഗ|സൗഖ്യ|ക്യാൻസർ|കാൻസർ|ഓപ്പറേഷൻ|ആശുപത്രി" },
+            { "id": "career", "label": "Career, visa & job", "match": "visa|job|career|work\\s*permit|abroad|\\buk\\b|canada|usa|australia|germany|ireland|nurs|interview|promotion|exam|mbbs|admission|seat|study|software|engineer|ജോലി|வேலை|വിസ|വിദേശ|പരീക്ഷ|പഠന|എൻജിനീയ" },
+            { "id": "health", "label": "Health", "match": "health|heal|cancer|disease|surgery|hospital|tumou?r|kidney|heart|illness|cure|recover|lupus|doctor|scan|രോഗ|സൗഖ്യ|ക്യാൻസർ|കാൻസർ|ഓപ്പറേഷൻ|ആശുപത്രി|ഡോക്ടർ|അസുഖ" },
             { "id": "family", "label": "Marriage & children", "match": "marriage|wedding|child|baby|pregnan|conceiv|ivf|വിവാഹ|കുഞ്ഞ|ഗർഭ|കുടുംബ" },
             { "id": "home-money", "label": "House, debt & money", "match": "debt|loan|house|land|financ|money|business|കടം|വീട്|സാമ്പത്തിക" },
             { "id": "others", "label": "Others" }
-          ] },
-        { "id": "other", "label": "Everything else", "unsorted": true }
+          ] }
       ] },
 
     { "id": "daily-blessings", "label": "Daily Blessings", "icon": "sun", "sources": ["dailyblessings"], "groupBy": "date" },
