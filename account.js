@@ -26,6 +26,7 @@ let CFG;
 
 (async () => {
   CFG = await FT.ready;
+  if (CFG.signin === false) return; // public sites (tube, faith) have no sign-in or Settings
   FT.registerPage("settings", renderSettings);
   renderAccountButton();
   if (!CFG.firebase?.apiKey) return; // sign-in not set up yet

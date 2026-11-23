@@ -1,4 +1,4 @@
-// FamilyTube (tube.ajith.ai): a family video front page. Plain JS, no build step.
+// Curated video front page shared by tube, faith and family .ajith.ai. Plain JS, no build step.
 // Reads config.json (what goes where) and data/videos.json (filled hourly by scripts/fetch.mjs).
 (() => {
   "use strict";
@@ -15,6 +15,10 @@
     cross: "M10.5 2h3v5h5v3h-5v12h-3V10h-5V7h5z",
     sun: "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM11 1h2v3h-2zm0 19h2v3h-2zM1 11h3v2H1zm19 0h3v2h-3zM4.2 5.6l1.4-1.4 2.1 2.1-1.4 1.4zm12.1 12.1 1.4-1.4 2.1 2.1-1.4 1.4zM4.2 18.4l2.1-2.1 1.4 1.4-2.1 2.1zM16.3 6.3l2.1-2.1 1.4 1.4-2.1 2.1z",
     gear: "M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.7a7 7 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.7a7 7 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z",
+    mic: "M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z",
+    flask: "M9 2h6v2h-1v5.2l5.6 9.4A2 2 0 0 1 17.9 22H6.1a2 2 0 0 1-1.7-3.4L10 9.2V4H9z",
+    rocket: "M12 2c3 2 5 6 5 10l2 3v3l-3-1.5h-1L14 19h-4l-1-2.5H8L5 18v-3l2-3c0-4 2-8 5-10zm0 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4z",
+    book: "M6 2h11a2 2 0 0 1 2 2v16a1 1 0 0 1-1 1H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm0 15a1 1 0 0 0 0 2h11v-2z",
     star: "M12 17.3 18.2 21l-1.6-7L22 9.2l-7.2-.6L12 2 9.2 8.6 2 9.2 7.4 14l-1.6 7z",
   };
   const icon = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[name] || ICONS.star}"/></svg>`;
@@ -29,33 +33,35 @@
 
   const re = (s) => (s ? new RegExp(s, "iu") : null);
 
+  // The nav is a tree: an item with "children" is a folder, and folders can nest
+  // (Catholic > Kreupasanam > Our Daily Bread). Children inherit their parent's sources.
   function prepareNav() {
-    for (const item of CFG.nav) {
-      if (item.type === "divider") continue;
-      item.path = item.id === "home" ? "" : item.id;
-      item.reMatch = re(item.match);
-      item.reExclude = re(item.exclude);
-      NAV.set(item.path, item);
-      for (const ch of item.children || []) {
-        ch.parent = item;
-        ch.path = `${item.id}/${ch.id}`;
-        ch.sources ||= item.sources;
-        ch.kids ??= item.kids;
-        ch.reMatch = re(ch.match);
-        ch.reExclude = re(ch.exclude);
-        for (const cat of ch.categories || []) cat.re = re(cat.match);
-        NAV.set(ch.path, ch);
+    const walk = (items, parent) => {
+      for (const item of items) {
+        if (item.type === "divider") continue;
+        item.parent = parent;
+        item.depth = parent ? parent.depth + 1 : 0;
+        item.path = item.id === "home" ? "" : parent ? `${parent.path}/${item.id}` : item.id;
+        if (parent) { item.sources ||= parent.sources; item.kids ??= parent.kids; }
+        item.reMatch = re(item.match);
+        item.reExclude = re(item.exclude);
+        for (const cat of item.categories || []) cat.re = re(cat.match);
+        NAV.set(item.path, item);
+        if (item.children) walk(item.children, item);
       }
-      for (const cat of item.categories || []) cat.re = re(cat.match);
-    }
+    };
+    walk(CFG.nav, null);
   }
+
+  // Every video under a nav item, folders included.
+  const allVideos = (item) => (item.children ? uniq(item.children.flatMap(allVideos)) : videosFor(item));
 
   // Profiles from a signed-in household (account.js) are added after the defaults.
   function setHousehold(profiles) {
     CFG.nav = CFG.nav.filter((i) => !i.household);
     for (const [k, item] of NAV) if (item.household) NAV.delete(k);
     for (const p of profiles) {
-      const item = { id: p.id, path: p.id, label: p.label, avatar: p.color, kids: !!p.kids, household: true,
+      const item = { id: p.id, path: p.id, parent: null, depth: 0, label: p.label, avatar: p.color, kids: !!p.kids, household: true,
         sources: (p.channels || []).map((c) => "u:" + c.key) };
       CFG.nav.push(item);
       NAV.set(item.path, item);
@@ -201,21 +207,24 @@
   // ---------- sidebar ----------
 
   function renderNav(path) {
-    const top = path.split("/")[0];
+    const onPath = (it) => (it.path === "" ? path === "" : path === it.path || path.startsWith(it.path + "/"));
     let html = "";
+    const sub = (items) => {
+      for (const ch of items) {
+        const pad = 62 + (ch.depth - 1) * 16;
+        html += `<a class="nav-sub${path === ch.path ? " active" : ""}${ch.children ? " folder" : ""}" style="padding-left:${pad}px" href="#/${esc(ch.path)}">${esc(ch.label)}</a>`;
+        if (ch.children && onPath(ch)) sub(ch.children);
+      }
+    };
     for (const item of CFG.nav) {
       if (item.type === "divider") { html += `<div class="nav-divider">${esc(item.label)}</div>`; continue; }
-      const active = item.path === top;
+      const active = onPath(item);
       const ic = item.avatar ? avatar(item) : icon(item.icon);
-      html += `<a class="nav-item${active && path === item.path ? " active" : active ? " active" : ""}" href="#/${esc(item.path)}">${ic}<span class="lbl">${esc(item.label)}</span></a>`;
-      if (active && item.children) {
-        for (const ch of item.children) {
-          html += `<a class="nav-sub${path === ch.path ? " active" : ""}" href="#/${esc(ch.path)}">${esc(ch.label)}</a>`;
-        }
-      }
+      html += `<a class="nav-item${active ? " active" : ""}" href="#/${esc(item.path)}">${ic}<span class="lbl">${esc(item.label)}</span></a>`;
+      if (active && item.children) sub(item.children);
     }
     if (PAGES.settings) {
-      html += `<div class="nav-divider"></div><a class="nav-item${top === "settings" ? " active" : ""}" href="#/settings">${icon("gear")}<span class="lbl">Settings</span></a>`;
+      html += `<div class="nav-divider"></div><a class="nav-item${path === "settings" ? " active" : ""}" href="#/settings">${icon("gear")}<span class="lbl">Settings</span></a>`;
     }
     if (UPDATED) html += `<div class="nav-foot">Updated ${esc(ago(UPDATED))}</div>`;
     $("#side").innerHTML = html;
@@ -250,8 +259,11 @@
   }
 
   function head(item, sub) {
-    const ic = item.avatar ? avatar(item.parent || item) : "";
-    const title = item.parent ? `${esc(item.parent.label)} · ${esc(item.label)}` : esc(item.label);
+    const trail = [];
+    for (let it = item; it; it = it.parent) trail.unshift(it);
+    const withAvatar = trail.find((it) => it.avatar);
+    const ic = withAvatar ? avatar(withAvatar) : "";
+    const title = trail.map((it) => esc(it.label)).join(" · ");
     return `<div class="page-head">${ic}<div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div></div>`;
   }
 
@@ -259,12 +271,14 @@
 
   function homePage() {
     const grownups = topItems().filter((i) => !i.kids);
-    const pool = uniq(grownups.flatMap((i) => (i.children ? i.children.flatMap(videosFor) : videosFor(i))));
+    const pool = uniq(grownups.flatMap(allVideos));
     if (!VIDEOS.length) return emptyState();
     let html = shelf(`${icon("star")} Must watch`, mustWatch(pool), "", { ranked: true });
     html += shelf("Latest", newest(pool).slice(0, 12));
-    for (const i of grownups) {
-      const list = newest(i.children ? uniq(i.children.flatMap(videosFor)) : videosFor(i));
+    // config.homeShelves picks which folders get a row on Home; default is every top-level item.
+    const shelves = CFG.homeShelves ? CFG.homeShelves.map((p) => NAV.get(p)).filter(Boolean) : grownups;
+    for (const i of shelves) {
+      const list = newest(allVideos(i));
       html += shelf(i.avatar ? `${avatar(i)} ${esc(i.label)}` : esc(i.label), list.slice(0, 12), i.path);
     }
     const kids = topItems().filter((i) => i.kids);
@@ -273,11 +287,11 @@
   }
 
   function parentPage(item) {
-    const all = uniq(item.children.flatMap(videosFor));
+    const all = allVideos(item);
     let html = head(item, `${all.length} videos`);
     if (!all.length) return html + emptyState(item);
     html += shelf(`${icon("star")} Must watch`, mustWatch(all), "", { ranked: true });
-    for (const ch of item.children) html += shelf(esc(ch.label), newest(videosFor(ch)).slice(0, 12), ch.path, { item: ch });
+    for (const ch of item.children) html += shelf(esc(ch.label), newest(allVideos(ch)).slice(0, 12), ch.path, { item: ch });
     return html;
   }
 
@@ -316,7 +330,7 @@
 
   function searchPage(item, term) {
     const words = term.toLowerCase().split(/\s+/);
-    const scope = item.type === "home" ? VIDEOS : item.children ? uniq(item.children.flatMap(videosFor)) : videosFor(item);
+    const scope = item.type === "home" ? VIDEOS : allVideos(item);
     const hits = newest(scope.filter((v) => { const t = (v.t + " " + v.c).toLowerCase(); return words.every((w) => t.includes(w)); }));
     const where = item.type === "home" ? "everything" : item.label;
     return `<div class="page-head"><div><h1>“${esc(term)}”</h1><p>${hits.length} results in ${esc(where)} · <a href="${esc(hrefWith({ q: null }))}" style="color:var(--accent)">clear</a></p></div></div>` +
