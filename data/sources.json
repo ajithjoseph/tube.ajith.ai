@@ -1,0 +1,62 @@
+{
+  "dwarkesh": {
+    "handle": "@DwarkeshPatel",
+    "channelId": "UCXl4i9dYBrFOabk0xGmbkRA",
+    "name": "Dwarkesh Patel"
+  },
+  "lex": {
+    "handle": "@lexfridman",
+    "channelId": "UCSHZKyawb77ixDdsGog4iWA",
+    "name": "Lex Fridman"
+  },
+  "latentspace": {
+    "handle": "@LatentSpacePod",
+    "channelId": "UCxBcwypKK-W3GHd_RZ9FZrQ",
+    "name": "Latent Space"
+  },
+  "nopriors": {
+    "handle": "@NoPriorsPodcast",
+    "channelId": "UCSI7h9hydQ40K5MJHnCrQvw",
+    "name": "No Priors: AI, Machine Learning, Tech, & Startups"
+  },
+  "anthropic": {
+    "handle": "@anthropic-ai",
+    "channelId": "UCrDwWp7EBBv4NwvScIpBDOA",
+    "name": "Anthropic"
+  },
+  "openai": {
+    "handle": "@OpenAI",
+    "channelId": "UCXZCJLdBC09xxGZ6gcdrc6A",
+    "name": "OpenAI"
+  },
+  "deepmind": {
+    "handle": "@GoogleDeepMind",
+    "channelId": "UCP7jMXSY2xbc3KCAE0MHQ-A",
+    "name": "Google DeepMind"
+  },
+  "karpathy": {
+    "handle": "@AndrejKarpathy",
+    "channelId": "UCXUPKJO5MZQN11PqgIvyuvQ",
+    "name": "Andrej Karpathy"
+  },
+  "yc": {
+    "handle": "@ycombinator",
+    "channelId": "UCcefcZRL2oaA_uBNeo5UOWg",
+    "name": "Y Combinator"
+  },
+  "lenny": {
+    "handle": "@LennysPodcast",
+    "channelId": "UC6t1O76G0jYXOAoYCm153dA",
+    "name": "Lenny's Podcast"
+  },
+  "a16z": {
+    "handle": "@a16z",
+    "channelId": "UC9cn0TuPq4dnbTY-CBsm8XA",
+    "name": "a16z"
+  },
+  "mfm": {
+    "handle": "@MyFirstMillionPod",
+    "channelId": "UCyaN6mg5u8Cjy2ZI4ikWaug",
+    "name": "My First Million"
+  }
+}
