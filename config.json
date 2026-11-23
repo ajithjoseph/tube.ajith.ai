@@ -1,57 +1,56 @@
 {
   "site": {
-    "name": "Family",
+    "name": "AI",
     "accent": "Tube",
-    "tagline": "What the family watches",
+    "tagline": "The AI videos worth your time, ranked.",
     "domain": "tube.ajith.ai"
   },
 
-  "_sources_help": "Each source is one YouTube channel or playlist. Use handle (@name), channelId (UC...) or playlistId (PL...). 'match' keeps only titles matching the regex. 'backfill' = pages of 50 older videos to pull when a YouTube API key is set. 'keep' = how many videos to remember.",
+  "_sources_help": "Each source is one YouTube channel or playlist. Use handle (@name), channelId (UC...) or playlistId (PL...). 'match' keeps only titles matching the regex. 'backfill' = pages of 50 older videos to pull when a YouTube API key is set. 'keep' = how many videos to remember. After each update, data/sources.json shows the real channel name each source resolved to.",
   "sources": {
-    "kreupasanam":    { "handle": "@kreupasanammarianshrine", "backfill": 20, "keep": 3000 },
-    "dailyblessings": { "handle": "", "todo": "Send me the Daily Blessings channel link" },
-
-    "karpathy":   { "handle": "@AndrejKarpathy" },
-    "lex":        { "handle": "@lexfridman" },
     "dwarkesh":   { "handle": "@DwarkeshPatel" },
+    "lex":        { "handle": "@lexfridman" },
+    "latentspace": { "handle": "@LatentSpacePod" },
+    "nopriors":   { "handle": "@NoPriorsPodcast" },
+
     "anthropic":  { "handle": "@anthropic-ai" },
+    "openai":     { "handle": "@OpenAI" },
+    "deepmind":   { "handle": "@GoogleDeepMind" },
+    "karpathy":   { "handle": "@AndrejKarpathy" },
+
     "yc":         { "handle": "@ycombinator" },
     "lenny":      { "handle": "@LennysPodcast" },
-    "mfm":        { "handle": "@MyFirstMillionPod" },
-    "malayalam":  { "handle": "", "todo": "Send me the Malayalam channels you meant by KPH" }
+    "a16z":       { "handle": "@a16z" },
+    "mfm":        { "handle": "@MyFirstMillionPod" }
   },
 
-  "_nav_help": "Sidebar items. Children inherit the parent's sources. 'match'/'exclude' are title regexes (case-insensitive). 'categories' adds filter chips; first match wins, unmatched go to the last chip. 'groupBy': 'date' shows date headings. 'kids': true keeps it off the Home page. 'unsorted': true lists parent videos that no sibling matched (Testimonials uses this, since testimony titles are personal stories with no common word).",
+  "_nav_help": "Sidebar tree. An item with 'children' is a folder; folders can nest. Children inherit the parent's sources. 'match'/'exclude' are title regexes (case-insensitive). 'categories' adds filter chips. 'groupBy': 'date' groups by month. 'unsorted': true lists parent videos no sibling matched.",
   "nav": [
     { "id": "home", "label": "Home", "icon": "home", "type": "home" },
 
-    { "id": "kreupasanam", "label": "Kreupasanam", "icon": "cross", "sources": ["kreupasanam"],
+    { "id": "podcasts", "label": "Podcasts", "icon": "mic",
       "children": [
-        { "id": "daily-bread", "label": "Our Daily Bread", "match": "അനുദിന\\s*അനുഗ്രഹ|\\|\\s*our\\s*daily\\s*bread\\s*\\|", "groupBy": "date" },
-        { "id": "udambadi", "label": "Udambadi Dhyanam", "match": "ഉടമ്പടി\\s*ധ്യാനം|udambadi\\s*dhyanam|ഒന്നാം\\s*ചൊവ്വ", "groupBy": "date" },
-        { "id": "vijayakumar", "label": "Br. Vijayakumar", "match": "vijay\\s*kumar|vijayakumar|വിജയ\\s*കുമാർ|വിജയകുമാർ" },
-        { "id": "prayers", "label": "Daily prayers & live", "match": "ഇന്നത്തെ\\s*ഉടമ്പടി|സായാഹ്ന\\s*പ്രാർത്ഥന|ലൈവ്|\\blive\\b|\\brally\\b", "exclude": "ഉടമ്പടി\\s*ധ്യാനം|ഒന്നാം\\s*ചൊവ്വ", "groupBy": "date" },
-        { "id": "testimonials", "label": "Testimonials", "unsorted": true,
-          "categories": [
-            { "id": "career", "label": "Career, visa & job", "match": "visa|job|career|work\\s*permit|abroad|\\buk\\b|canada|usa|australia|germany|ireland|nurs|interview|promotion|exam|mbbs|admission|seat|study|software|engineer|ജോലി|வேலை|വിസ|വിദേശ|പരീക്ഷ|പഠന|എൻജിനീയ" },
-            { "id": "health", "label": "Health", "match": "health|heal|cancer|disease|surgery|hospital|tumou?r|kidney|heart|illness|cure|recover|lupus|doctor|scan|രോഗ|സൗഖ്യ|ക്യാൻസർ|കാൻസർ|ഓപ്പറേഷൻ|ആശുപത്രി|ഡോക്ടർ|അസുഖ" },
-            { "id": "family", "label": "Marriage & children", "match": "marriage|wedding|child|baby|pregnan|conceiv|ivf|വിവാഹ|കുഞ്ഞ|ഗർഭ|കുടുംബ" },
-            { "id": "home-money", "label": "House, debt & money", "match": "debt|loan|house|land|financ|money|business|കടം|വീട്|സാമ്പത്തിക" },
-            { "id": "others", "label": "Others" }
-          ] }
+        { "id": "dwarkesh", "label": "Dwarkesh Podcast", "sources": ["dwarkesh"] },
+        { "id": "lex", "label": "Lex Fridman", "sources": ["lex"] },
+        { "id": "latent-space", "label": "Latent Space", "sources": ["latentspace"] },
+        { "id": "no-priors", "label": "No Priors", "sources": ["nopriors"] }
       ] },
 
-    { "id": "daily-blessings", "label": "Daily Blessings", "icon": "sun", "sources": ["dailyblessings"], "groupBy": "date" },
-
-    { "type": "divider", "label": "Family" },
-
-    { "id": "ajith", "label": "Ajith", "avatar": "#e8692c", "sources": ["karpathy", "lex", "dwarkesh", "anthropic", "yc", "lenny", "mfm", "malayalam"],
+    { "id": "labs", "label": "Labs & research", "icon": "flask",
       "children": [
-        { "id": "ai", "label": "AI podcasts", "sources": ["karpathy", "lex", "dwarkesh", "anthropic"] },
-        { "id": "startups", "label": "Startup podcasts", "sources": ["yc", "lenny", "mfm"] },
-        { "id": "malayalam", "label": "Malayalam", "sources": ["malayalam"] }
+        { "id": "anthropic", "label": "Anthropic", "sources": ["anthropic"] },
+        { "id": "openai", "label": "OpenAI", "sources": ["openai"] },
+        { "id": "deepmind", "label": "Google DeepMind", "sources": ["deepmind"] },
+        { "id": "karpathy", "label": "Andrej Karpathy", "sources": ["karpathy"] }
       ] },
-    { "id": "nisha", "label": "Nisha", "avatar": "#c2185b", "sources": ["kreupasanam", "dailyblessings"] }
+
+    { "id": "builders", "label": "Builders & startups", "icon": "rocket",
+      "children": [
+        { "id": "yc", "label": "Y Combinator", "sources": ["yc"] },
+        { "id": "lenny", "label": "Lenny's Podcast", "sources": ["lenny"] },
+        { "id": "a16z", "label": "a16z", "sources": ["a16z"] },
+        { "id": "mfm", "label": "My First Million", "sources": ["mfm"] }
+      ] }
   ],
 
   "ranking": {
@@ -62,13 +61,5 @@
   },
 
   "hideShorts": true,
-
-  "_signin_help": "Google sign-in (Firebase) and the browser YouTube key. Both are safe to be public: lock the YouTube key to tube.ajith.ai in Google Cloud, and access is controlled by firestore.rules. Kids' profiles live in Settings, not here.",
-  "firebase": {
-    "apiKey": "",
-    "authDomain": "",
-    "projectId": "",
-    "appId": ""
-  },
-  "youtubeApiKey": ""
+  "signin": false
 }

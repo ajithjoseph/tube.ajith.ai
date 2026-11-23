@@ -17,6 +17,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG = join(ROOT, "config.json");
 const STORE = join(ROOT, "data", "videos.json");
 const CHANNELS = join(ROOT, "data", "channels.json");
+const SOURCES = join(ROOT, "data", "sources.json"); // what each source resolved to, for checking handles
 const KEY = process.env.YOUTUBE_API_KEY || "";
 const UA = "Mozilla/5.0 (compatible; family-videos-updater/1.0)";
 const DEFAULT_KEEP = 400;
@@ -68,6 +69,8 @@ async function resolveChannelId(src, cache) {
 
 // ---------- RSS ----------
 
+let lastFeedTitle = "";
+
 const decode = (s) =>
   s.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n));
@@ -76,6 +79,8 @@ const attr = (xml, name, a) => xml.match(new RegExp(`<${name}[^>]*\\s${a}="([^"]
 
 async function fromRss(query) {
   const xml = await get(`https://www.youtube.com/feeds/videos.xml?${query}`);
+  const head = xml.split("<entry>")[0];
+  lastFeedTitle = decode(tag(head, "title") || "");
   return [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(([, e]) => ({
     id: tag(e, "yt:videoId"),
     t: decode(tag(e, "title") || ""),
@@ -135,6 +140,7 @@ async function main() {
   const cache = await readJson(CHANNELS, {});
   const byId = new Map(store.videos.map((v) => [v.id, v]));
   const report = [];
+  const resolved = {};
 
   for (const [sid, src] of Object.entries(config.sources)) {
     if (!src.handle && !src.channelId && !src.playlistId) { report.push(`skip  ${sid} (no channel set yet)`); continue; }
@@ -142,10 +148,12 @@ async function main() {
       let fresh;
       if (src.playlistId) {
         fresh = await fromRss(`playlist_id=${src.playlistId}`);
+        resolved[sid] = { playlistId: src.playlistId, name: lastFeedTitle };
       } else {
         const cid = await resolveChannelId(src, cache);
         if (!cid) throw new Error(`could not find channel ${src.handle}`);
         fresh = await fromRss(`channel_id=${cid}`);
+        resolved[sid] = { handle: src.handle || null, channelId: cid, name: lastFeedTitle };
         if (KEY) {
           const known = store.videos.filter((v) => v.s === sid).length;
           const pages = known < 50 ? (src.backfill ?? 4) : 1;
@@ -171,7 +179,7 @@ async function main() {
         if (old?.d != null && merged.d == null) merged.d = old.d;
         byId.set(v.id, merged);
       }
-      report.push(`ok    ${sid}: ${fresh.length} seen, ${added} new`);
+      report.push(`ok    ${sid} (${resolved[sid]?.name || "?"}): ${fresh.length} seen, ${added} new`);
     } catch (err) {
       report.push(`FAIL  ${sid}: ${err.message}`);
     }
@@ -196,6 +204,7 @@ async function main() {
     await writeFile(STORE, JSON.stringify({ updated: new Date().toISOString(), videos }));
   }
   await writeFile(CHANNELS, JSON.stringify(cache, null, 2) + "\n");
+  await writeFile(SOURCES, JSON.stringify(resolved, null, 2) + "\n");
 
   console.log(report.join("\n"));
   console.log(`${videos.length} videos stored${changed ? "" : " (no change)"}${KEY ? "" : " — RSS only, set YOUTUBE_API_KEY for backfill + comments"}`);
